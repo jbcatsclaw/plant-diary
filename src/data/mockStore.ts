@@ -3,7 +3,7 @@
  * All dates use ISO 8601 format strings only
  */
 
-import { Plant, PlantLog, ChatMessage, PlantWithLogs, DEFAULT_CARE_PLAN } from '../types';
+import { Plant, CareLog, ChatMessage, PlantWithLogs, DEFAULT_CARE_PLAN } from '../types';
 
 // Generate UUID
 const generateId = (): string => {
@@ -40,7 +40,7 @@ const initialPlants: Plant[] = [
     photoUrl: 'https://images.unsplash.com/photo-1509423350716-97f9360b4e09?w=400',
     dateAcquired: '2024-05-20',
     notes: '阳台种植，需控水',
-    carePlan: { ...DEFAULT_CARE_PLAN, wateringIntervalDays: 14 },
+    carePlan: { ...DEFAULT_CARE_PLAN, water: { enabled: true, intervalDays: 14 } },
     createdAt: '2024-05-20T00:00:00.000Z',
     updatedAt: '2024-05-20T00:00:00.000Z',
   },
@@ -58,11 +58,11 @@ const initialPlants: Plant[] = [
 ];
 
 // Mock 记录数据 (using ISO strings)
-const initialLogs: PlantLog[] = [
+const initialLogs: CareLog[] = [
   {
     id: 'l1',
     plantId: '1',
-    type: 'watering',
+    type: 'water',
     notes: '浇透水，叶子擦拭',
     date: '2024-12-01',
     createdAt: '2024-12-01T00:00:00.000Z',
@@ -70,7 +70,7 @@ const initialLogs: PlantLog[] = [
   {
     id: 'l2',
     plantId: '1',
-    type: 'fertilizing',
+    type: 'fertilize',
     notes: '施加液态肥',
     date: '2024-11-15',
     createdAt: '2024-11-15T00:00:00.000Z',
@@ -78,7 +78,7 @@ const initialLogs: PlantLog[] = [
   {
     id: 'l3',
     plantId: '2',
-    type: 'watering',
+    type: 'water',
     notes: '少量浇水',
     date: '2024-12-02',
     createdAt: '2024-12-02T00:00:00.000Z',
@@ -86,7 +86,7 @@ const initialLogs: PlantLog[] = [
   {
     id: 'l4',
     plantId: '3',
-    type: 'pruning',
+    type: 'prune',
     notes: '剪除黄叶',
     date: '2024-11-28',
     createdAt: '2024-11-28T00:00:00.000Z',
@@ -95,7 +95,7 @@ const initialLogs: PlantLog[] = [
 
 // 内存存储
 let plants: Plant[] = [...initialPlants];
-let logs: PlantLog[] = [...initialLogs];
+let logs: CareLog[] = [...initialLogs];
 let chats: Map<string, ChatMessage[]> = new Map();
 
 // 获取所有植物
@@ -154,12 +154,12 @@ export const deletePlant = (plantId: string): boolean => {
 };
 
 // 添加记录
-export const addLog = (plantId: string, logData: Omit<PlantLog, 'id' | 'plantId' | 'createdAt'>): PlantLog | null => {
+export const addLog = (plantId: string, logData: Omit<CareLog, 'id' | 'plantId' | 'createdAt'>): CareLog | null => {
   const plant = plants.find(p => p.id === plantId);
   if (!plant) return null;
   
   const now = getCurrentISO();
-  const newLog: PlantLog = {
+  const newLog: CareLog = {
     ...logData,
     id: generateId(),
     plantId,
@@ -227,5 +227,3 @@ export const searchPlants = (query: string): Plant[] => {
   );
 };
 
-// Re-export from services for convenience
-export { listPlants, listLogs } from '../services';

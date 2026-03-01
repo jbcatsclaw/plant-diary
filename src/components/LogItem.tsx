@@ -1,21 +1,21 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { PlantLog, getLogTypeLabel } from '../types';
+import { CareLog, getCareLogTypeLabel } from '../types';
 import { colors, spacing, borderRadius, fontSize } from '../constants/theme';
 
 interface Props {
-  log: PlantLog;
+  log: CareLog;
 }
 
 const getLogTypeColor = (type: string): string => {
   switch (type) {
-    case 'watering':
+    case 'water':
       return '#7BA05B';
-    case 'fertilizing':
+    case 'fertilize':
       return '#D4A574';
-    case 'pruning':
+    case 'prune':
       return '#A8C686';
-    case 'pest_control':
+    case 'pest':
       return '#C97B7B';
     default:
       return colors.textSecondary;
@@ -23,14 +23,9 @@ const getLogTypeColor = (type: string): string => {
 };
 
 export const LogItem: React.FC<Props> = ({ log }) => {
-  const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('zh-CN', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  const formatDate = (isoDate: string): string => {
+    // isoDate: YYYY-MM-DD
+    return isoDate;
   };
 
   return (
@@ -40,7 +35,7 @@ export const LogItem: React.FC<Props> = ({ log }) => {
         <View style={styles.header}>
           <View style={[styles.typeBadge, { backgroundColor: getLogTypeColor(log.type) + '20' }]}>
             <Text style={[styles.typeText, { color: getLogTypeColor(log.type) }]}>
-              {getLogTypeLabel(log.type)}
+              {getCareLogTypeLabel(log.type)}
             </Text>
           </View>
           <Text style={styles.date}>{formatDate(log.date)}</Text>

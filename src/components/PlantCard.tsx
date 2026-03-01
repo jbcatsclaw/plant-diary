@@ -9,8 +9,9 @@ interface Props {
 }
 
 export const PlantCard: React.FC<Props> = ({ plant, onPress }) => {
-  const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+  const formatDate = (isoDate: string): string => {
+    // isoDate: YYYY-MM-DD
+    return isoDate;
   };
 
   return (
@@ -23,8 +24,8 @@ export const PlantCard: React.FC<Props> = ({ plant, onPress }) => {
       <View style={styles.content}>
         <Text style={styles.name} numberOfLines={1}>{plant.name}</Text>
         <Text style={styles.species} numberOfLines={1}>{plant.species}</Text>
-        {plant.arrivalDate && (
-          <Text style={styles.date}>到家: {formatDate(plant.arrivalDate)}</Text>
+        {plant.dateAcquired && (
+          <Text style={styles.date}>到家: {formatDate(plant.dateAcquired)}</Text>
         )}
       </View>
     </TouchableOpacity>

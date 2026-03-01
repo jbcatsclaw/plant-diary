@@ -1,67 +1,86 @@
-import { type } from "react-native";
+// Plant Diary Types
+// All date/time fields MUST be ISO 8601 strings.
 
-// 植物类型
-export interface Plant {
+export type ISODate = string; // YYYY-MM-DD
+export type ISOTimestamp = string; // full ISO
+
+export type CareLogType = 'water' | 'fertilize' | 'prune' | 'pest' | 'other';
+
+export type CarePlanItem = {
+  enabled: boolean;
+  intervalDays: number;
+};
+
+export type CarePlan = {
+  water: CarePlanItem;
+  fertilize: CarePlanItem;
+  prune: CarePlanItem;
+  pest: CarePlanItem;
+};
+
+export const DEFAULT_CARE_PLAN: CarePlan = {
+  water: { enabled: true, intervalDays: 7 },
+  fertilize: { enabled: false, intervalDays: 30 },
+  prune: { enabled: false, intervalDays: 90 },
+  pest: { enabled: false, intervalDays: 30 },
+};
+
+export type Plant = {
   id: string;
   name: string;
-  species: string;
-  photoUrl: string;
-  arrivalDate: Date;
-  notes: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+  species?: string;
+  photoUrl?: string;
+  dateAcquired?: ISODate;
+  notes?: string;
+  carePlan: CarePlan;
+  createdAt: ISOTimestamp;
+  updatedAt: ISOTimestamp;
+};
 
-// 记录类型
-export type LogType = 'watering' | 'fertilizing' | 'pruning' | 'pest_control' | 'other';
-
-export interface PlantLog {
+export type CareLog = {
   id: string;
   plantId: string;
-  type: LogType;
-  notes: string;
-  date: Date;
-  createdAt: Date;
-}
+  type: CareLogType;
+  notes?: string;
+  customType?: string; // when type === 'other'
+  date: ISODate;
+  createdAt: ISOTimestamp;
+};
 
-// AI 对话消息
-export interface ChatMessage {
+export type ChatMessage = {
   id: string;
+  plantId: string;
   role: 'user' | 'assistant';
   content: string;
-  timestamp: Date;
-}
-
-// 植物详情（含记录）
-export interface PlantWithLogs extends Plant {
-  logs: PlantLog[];
-}
-
-// 表单数据
-export interface PlantFormData {
-  name: string;
-  species: string;
-  photoUrl: string;
-  arrivalDate: Date;
-  notes: string;
-}
-
-export interface LogFormData {
-  type: LogType;
-  notes: string;
-  date: Date;
-}
-
-// 记录类型选项
-export const LOG_TYPE_OPTIONS: { value: LogType; label: string }[] = [
-  { value: 'watering', label: '浇水' },
-  { value: 'fertilizing', label: '施肥' },
-  { value: 'pruning', label: '修剪' },
-  { value: 'pest_control', label: '除虫' },
-  { value: 'other', label: '其他' },
-];
-
-export const getLogTypeLabel = (type: LogType): string => {
-  const option = LOG_TYPE_OPTIONS.find(o => o.value === type);
-  return option?.label ?? '其他';
+  timestamp: ISOTimestamp;
 };
+
+export type PlantWithLogs = Plant & { logs: CareLog[] };
+
+export type PlantFormData = {
+  name: string;
+  species?: string;
+  photoUrl?: string;
+  dateAcquired?: ISODate;
+  notes?: string;
+  carePlan?: Partial<CarePlan>;
+};
+
+export type LogFormData = {
+  type: CareLogType;
+  notes?: string;
+  customType?: string;
+  date: ISODate;
+};
+
+export const CARE_LOG_TYPE_LABELS: Record<CareLogType, string> = {
+  water: '浇水',
+  fertilize: '施肥',
+  prune: '修剪',
+  pest: '除虫',
+  other: '其他',
+};
+
+export function getCareLogTypeLabel(type: CareLogType): string {
+  return CARE_LOG_TYPE_LABELS[type] ?? '其他';
+}

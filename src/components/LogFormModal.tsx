@@ -10,7 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { LogFormData, LogType, LOG_TYPE_OPTIONS } from '../types';
+import { LogFormData, CareLogType, CARE_LOG_TYPE_LABELS } from '../types';
 import { colors, spacing, borderRadius, fontSize } from '../constants/theme';
 
 interface Props {
@@ -20,9 +20,9 @@ interface Props {
 }
 
 const defaultFormData: LogFormData = {
-  type: 'watering',
+  type: 'water',
   notes: '',
-  date: new Date(),
+  date: new Date().toISOString().split('T')[0],
 };
 
 export const LogFormModal: React.FC<Props> = ({ visible, onClose, onSubmit }) => {
@@ -54,22 +54,22 @@ export const LogFormModal: React.FC<Props> = ({ visible, onClose, onSubmit }) =>
           <View style={styles.field}>
             <Text style={styles.label}>类型</Text>
             <View style={styles.typeGrid}>
-              {LOG_TYPE_OPTIONS.map((option) => (
+              {(Object.keys(CARE_LOG_TYPE_LABELS) as CareLogType[]).map((t) => (
                 <TouchableOpacity
-                  key={option.value}
+                  key={t}
                   style={[
                     styles.typeButton,
-                    formData.type === option.value && styles.typeButtonActive,
+                    formData.type === t && styles.typeButtonActive,
                   ]}
-                  onPress={() => setFormData(prev => ({ ...prev, type: option.value as LogType }))}
+                  onPress={() => setFormData(prev => ({ ...prev, type: t }))}
                 >
                   <Text
                     style={[
                       styles.typeButtonText,
-                      formData.type === option.value && styles.typeButtonTextActive,
+                      formData.type === t && styles.typeButtonTextActive,
                     ]}
                   >
-                    {option.label}
+                    {CARE_LOG_TYPE_LABELS[t]}
                   </Text>
                 </TouchableOpacity>
               ))}

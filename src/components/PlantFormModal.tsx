@@ -10,7 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { Plant, PlantFormData } from '../types';
+import { Plant, PlantFormData, DEFAULT_CARE_PLAN } from '../types';
 import { colors, spacing, borderRadius, fontSize } from '../constants/theme';
 
 interface Props {
@@ -24,8 +24,9 @@ const defaultFormData: PlantFormData = {
   name: '',
   species: '',
   photoUrl: '',
-  arrivalDate: new Date(),
+  dateAcquired: undefined,
   notes: '',
+  carePlan: DEFAULT_CARE_PLAN,
 };
 
 export const PlantFormModal: React.FC<Props> = ({ visible, plant, onClose, onSubmit }) => {
@@ -38,8 +39,9 @@ export const PlantFormModal: React.FC<Props> = ({ visible, plant, onClose, onSub
         name: plant.name,
         species: plant.species,
         photoUrl: plant.photoUrl,
-        arrivalDate: plant.arrivalDate,
+        dateAcquired: plant.dateAcquired,
         notes: plant.notes,
+        carePlan: plant.carePlan,
       });
     } else {
       setFormData(defaultFormData);
@@ -53,12 +55,9 @@ export const PlantFormModal: React.FC<Props> = ({ visible, plant, onClose, onSub
     if (!formData.name.trim()) {
       newErrors.name = '请输入植物名称';
     }
-    if (!formData.species.trim()) {
-      newErrors.species = '请输入品种';
-    }
-    if (!formData.photoUrl.trim()) {
-      newErrors.photoUrl = '请输入图片地址';
-    }
+    // 品种/图片地址在 MVP 中允许为空（mock 阶段不强制）
+    // if (!formData.species?.trim()) newErrors.species = '请输入品种';
+    // if (!formData.photoUrl?.trim()) newErrors.photoUrl = '请输入图片地址';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);

@@ -66,22 +66,22 @@ describe('normalizeCarePlan', () => {
   });
 
   it('should merge partial input with defaults', () => {
-    const result = normalizeCarePlan({ wateringIntervalDays: 3 });
-    expect(result.wateringIntervalDays).toBe(3);
-    expect(result.fertilizingIntervalDays).toBe(DEFAULT_CARE_PLAN.fertilizingIntervalDays);
-    expect(result.pruningSeason).toBe(DEFAULT_CARE_PLAN.pruningSeason);
+    const result = normalizeCarePlan({ water: { enabled: true, intervalDays: 3 } });
+    expect(result.water.intervalDays).toBe(3);
+    expect(result.fertilize.intervalDays).toBe(DEFAULT_CARE_PLAN.fertilize.intervalDays);
+    expect(result.prune.intervalDays).toBe(DEFAULT_CARE_PLAN.prune.intervalDays);
   });
 
   it('should override defaults with provided values', () => {
     const custom = {
-      wateringIntervalDays: 5,
-      fertilizingIntervalDays: 15,
-      notes: 'Custom notes',
+      water: { enabled: false, intervalDays: 9 },
+      fertilize: { enabled: true, intervalDays: 15 },
     };
     const result = normalizeCarePlan(custom);
-    expect(result.wateringIntervalDays).toBe(5);
-    expect(result.fertilizingIntervalDays).toBe(15);
-    expect(result.notes).toBe('Custom notes');
+    expect(result.water.enabled).toBe(false);
+    expect(result.water.intervalDays).toBe(9);
+    expect(result.fertilize.enabled).toBe(true);
+    expect(result.fertilize.intervalDays).toBe(15);
   });
 });
 
